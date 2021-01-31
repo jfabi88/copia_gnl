@@ -6,7 +6,7 @@
 /*   By: jfabi <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/30 15:32:33 by jfabi             #+#    #+#             */
-/*   Updated: 2021/01/31 18:37:32 by jfabi            ###   ########.fr       */
+/*   Updated: 2021/01/31 20:07:31 by kizura           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,20 @@ int		ft_strlen(const char *s)
 }
 
 
-char	*first_allocation(char *p)
+char	*first_allocation(char *p, char *buffer)
 {
+	int i;
+
+	i = 0;
 	//printf("inziialmente il punattore in firs_allocation e: %p\n", &p);
 	if (p != 0)
 	{
 		free(p);
 			p = 0;
 	}
-	p = malloc(BUFFER_SIZE + 1);
+	while(buffer[i] != '\n' && buffer[i])
+		i++;
+	p = malloc(i + 1);
 	//printf("il puntatore in prima allocazione e: %p\n", &p);
 	if (p == 0)
 		return (0);
@@ -60,8 +65,13 @@ char	*first_allocation(char *p)
 }
 
 
-char	*allocazione_line(char *p, char *matrice)
+char	*allocazione_line(char *p, char *buffer)
 {
+	size_t i;
+
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
 	//char	temp[ft_strlen(p) + 1];
 	//int		i;
 
@@ -85,7 +95,7 @@ char	*allocazione_line(char *p, char *matrice)
 	//p[i] = 0;
 	//free(temp);
 	//printf("inizilamente in allocazione il punattore e: %p\n", &p);
-	p = realloc(p, ft_strlen(p) + BUFFER_SIZE + 1);
+	p = realloc(p, ft_strlen(p) + i + 1);
 	if (p == 0)
 		return (0);
 	//printf("successivamente il punattore in allocazione e: %p\n", &p);
@@ -166,9 +176,9 @@ int		get_next_line(int fd, char **line)
 	if (matrix[fd] == 0)
 		return (-1);
 	//printf("la matrice fd e: %p\n", &matrix[fd]);
-	if ((*line = first_allocation(*line)) == NULL)
+	if ((*line = first_allocation(*line, matrix[fd])) == NULL)
 		return (-1);
-	//printf("la linea totale e: %p\n", &(line));
+	//printf("la linea totale e: %p:183\n", &(line));
 	//printf("la line e: %p\n", &(*line));
 	*line = join_modificato(*line, matrix, fd, &ret);
 	//printf("la ret e: %p\n", &ret);
